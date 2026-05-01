@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="VehicleMaintenance" table="vehicle_maintenance">
+        <id name="maintId" column="maint_id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="vehicle" class="Vehicle" column="vehicle_id" not-null="true" lazy="false"/>
+        <property name="maintDate"   column="maint_date"  type="timestamp"/>
+        <property name="description" column="description" length="255"/>
+        <property name="cost"        column="cost"        precision="15" scale="2"/>
+        <property name="odometer"    column="odometer"/>
+        <property name="technician"  column="technician"  length="255"/>
+    </class>
+
+</hibernate-mapping>

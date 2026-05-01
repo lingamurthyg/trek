@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="Notification" table="notifications">
+        <id name="notificationId" column="notification_id">
+            <generator class="identity"/>
+        </id>
+        <property name="userId"        column="user_id"/>
+        <property name="subject"       column="subject"        length="255"/>
+        <property name="body"          column="body"           type="text"/>
+        <property name="sentAt"        column="sent_at"        type="timestamp"/>
+        <property name="deliveredFlag" column="delivered_flag" length="255"/>
+    </class>
+
+</hibernate-mapping>

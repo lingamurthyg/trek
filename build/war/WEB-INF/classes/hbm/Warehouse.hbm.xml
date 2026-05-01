@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="Warehouse" table="warehouses">
+        <id name="warehouseId" column="warehouse_id">
+            <generator class="identity"/>
+        </id>
+        <property name="code"        column="code" not-null="true" length="255"/>
+        <property name="name"        column="name" length="255"/>
+        <property name="city"        column="city" length="255"/>
+        <property name="capacityM3"  column="capacity_m3" precision="15" scale="2"/>
+
+        <set name="zones" inverse="true" lazy="false" cascade="all-delete-orphan">
+            <key column="warehouse_id"/>
+            <one-to-many class="WarehouseZone"/>
+        </set>
+    </class>
+
+</hibernate-mapping>

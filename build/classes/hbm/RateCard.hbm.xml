@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="RateCard" table="rate_cards">
+        <id name="rateCardId" column="rate_card_id">
+            <generator class="identity"/>
+        </id>
+        <property name="name"          column="name" length="255"/>
+        <property name="customerId"    column="customer_id"/>
+        <property name="effectiveDate" column="effective_date" length="255"/>
+        <property name="expiryDate"    column="expiry_date"    length="255"/>
+        <property name="activeFlag"    column="active_flag"    length="255"/>
+
+        <set name="entries" inverse="true" lazy="false" cascade="all-delete-orphan">
+            <key column="rate_card_id"/>
+            <one-to-many class="RateCardEntry"/>
+        </set>
+    </class>
+
+</hibernate-mapping>

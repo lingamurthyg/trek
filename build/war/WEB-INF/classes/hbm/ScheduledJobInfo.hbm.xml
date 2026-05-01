@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="ScheduledJobInfo" table="scheduled_jobs">
+        <id name="jobId" column="job_id">
+            <generator class="identity"/>
+        </id>
+        <property name="jobName"     column="job_name"     not-null="true" length="255"/>
+        <property name="cronExpr"    column="cron_expr"    length="255"/>
+        <property name="lastRun"     column="last_run"     type="timestamp"/>
+        <property name="nextRun"     column="next_run"     type="timestamp"/>
+        <property name="enabledFlag" column="enabled_flag" length="255"/>
+    </class>
+
+</hibernate-mapping>

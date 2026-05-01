@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="ShipmentLeg" table="shipment_legs">
+        <id name="legId" column="leg_id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="shipment" class="Shipment" column="shipment_id" not-null="true" lazy="false"/>
+        <property name="seqNo"         column="seq_no"/>
+        <property name="fromLocation"  column="from_location"  length="255"/>
+        <property name="toLocation"    column="to_location"    length="255"/>
+        <property name="driverId"      column="driver_id"/>
+        <property name="vehicleId"     column="vehicle_id"/>
+        <property name="departureTime" column="departure_time" type="timestamp"/>
+        <property name="arrivalTime"   column="arrival_time"   type="timestamp"/>
+        <property name="status"        column="status"         length="255"/>
+    </class>
+
+</hibernate-mapping>

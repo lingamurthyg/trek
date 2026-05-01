@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Log4j2 configuration for CargoTrak.
+    This file replaces the legacy log4j.properties (Log4j 1.x).
+    The log4j-1.2-api bridge in pom.xml allows existing org.apache.log4j.Logger
+    calls to route through Log4j2 without code changes.
+
+    Migrated for Java 21 / Log4j2 2.23.1
+-->
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{ISO8601} %-5p [%X{user}] %c{1} - %m%n"/>
+        </Console>
+        <RollingFile name="FILE"
+                     fileName="/var/app/cargo/logs/cargotrak.log"
+                     filePattern="/var/app/cargo/logs/cargotrak-%i.log">
+            <PatternLayout pattern="%d{ISO8601} %-5p [%X{user}] %c - %m%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <!-- Tame noisy frameworks -->
+        <Logger name="org.hibernate" level="WARN"/>
+        <Logger name="org.springframework" level="WARN"/>
+        <Logger name="org.apache.struts" level="WARN"/>
+        <Logger name="org.quartz" level="INFO"/>
+        <Logger name="org.apache.axis" level="WARN"/>
+        <Logger name="org.apache.commons" level="WARN"/>
+        <!-- CargoTrak own loggers -->
+        <Logger name="com.acme.cargotrak" level="INFO"/>
+        <Logger name="com.acme.cargotrak.dao" level="INFO"/>
+        <Logger name="com.acme.cargotrak.action" level="INFO"/>
+        <Logger name="com.acme.cargotrak.job" level="INFO"/>
+        <Root level="INFO">
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="FILE"/>
+        </Root>
+    </Loggers>
+</Configuration>

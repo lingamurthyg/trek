@@ -1,0 +1,132 @@
+/* CargoTrak. circa 2010. */
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: Verdana, "DejaVu Sans", sans-serif;
+    font-size: 13px;
+    color: #222;
+    background: #f4f4f0;
+}
+
+a { color: #1f4f8b; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+code, pre {
+    font-family: "Courier New", monospace;
+    background: #fff8d6;
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+pre { padding: 8px; overflow: auto; }
+
+.cargo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1f4f8b;
+    color: #fff;
+    padding: 8px 16px;
+    border-bottom: 3px solid #003366;
+}
+.cargo-header .brand { font-weight: bold; font-size: 18px; }
+.cargo-header .brand .version { font-size: 11px; opacity: 0.7; margin-left: 6px; }
+.cargo-header .user { font-size: 12px; }
+.cargo-header .user a { color: #ffd; }
+
+.cargo-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: #2e6cb0;
+    border-bottom: 1px solid #003366;
+}
+.cargo-nav li { }
+.cargo-nav a {
+    display: block;
+    padding: 8px 12px;
+    color: #fff;
+    border-right: 1px solid rgba(255,255,255,0.2);
+}
+.cargo-nav a:hover { background: #1f4f8b; text-decoration: none; }
+
+.cargo-main {
+    padding: 16px 24px;
+    max-width: 1400px;
+}
+
+.cargo-footer {
+    margin-top: 32px;
+    padding: 12px 16px;
+    background: #ddd;
+    border-top: 1px solid #aaa;
+    font-size: 11px;
+    color: #666;
+    text-align: center;
+}
+
+h1 { color: #1f4f8b; border-bottom: 2px solid #1f4f8b; padding-bottom: 4px; }
+h2 { color: #1f4f8b; margin-top: 24px; }
+
+table.grid {
+    border-collapse: collapse;
+    width: 100%;
+    background: #fff;
+    margin: 8px 0 16px;
+}
+table.grid th, table.grid td {
+    border: 1px solid #c8c8c0;
+    padding: 4px 8px;
+    text-align: left;
+    vertical-align: top;
+}
+table.grid th { background: #e2e8d8; font-weight: bold; }
+table.grid tr:nth-child(even) td { background: #f9f9f5; }
+
+form { margin: 8px 0; }
+form label { display: block; margin: 4px 0; }
+form input[type=text], form input[type=password], form select, form textarea {
+    border: 1px solid #aaa;
+    padding: 4px 6px;
+    font-size: 13px;
+    min-width: 220px;
+}
+form button, .btn {
+    background: #1f4f8b;
+    color: #fff;
+    border: 1px solid #003366;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    text-decoration: none;
+    display: inline-block;
+}
+form button:hover, .btn:hover { background: #2e6cb0; }
+
+.search-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.search-bar input, .search-bar select { min-width: 140px; }
+
+.error   { background: #ffe2e2; border: 1px solid #c33; padding: 8px; color: #800; }
+.success { background: #e3ffe3; border: 1px solid #383; padding: 8px; color: #060; }
+.warn    { background: #fff7c2; border: 1px solid #c90; padding: 8px; color: #850; }
+
+.cards { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0; }
+.card  { background: #fff; border: 1px solid #c8c8c0; padding: 12px 16px; min-width: 120px; }
+.card .num { font-size: 22px; font-weight: bold; color: #1f4f8b; }
+.card .lbl { font-size: 11px; color: #666; }
+
+.login-page { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #1f4f8b; }
+.login-card  { background: #fff; padding: 32px; min-width: 320px; border: 1px solid #003366; }
+.login-card h1 { margin-top: 0; }
+
+.error-page { padding: 32px; }
+
+.side-info { background: #fff7c2; padding: 8px; border: 1px solid #cc9; margin: 8px 0; }
+
+.pager { margin: 8px 0; }
+.pager a { margin-right: 8px; }

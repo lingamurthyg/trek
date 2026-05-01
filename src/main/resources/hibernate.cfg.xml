@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<!--
+    Stand-alone hibernate config used by some legacy CLI tooling
+    (data-fix scripts, the old admin SchemaTool jar).
+    The web app reads its mappings via applicationContext.xml -- this file is
+    NOT loaded by Tomcat. But the credentials should match. They sometimes don't.
+
+    Migrated for Java 21 / Hibernate 5.6:
+     - Driver class: com.mysql.jdbc.Driver -> com.mysql.cj.jdbc.Driver (MySQL Connector/J 8.x)
+     - JDBC URL: added serverTimezone=UTC (required by Connector/J 8.x)
+     - Dialect: MySQL5InnoDBDialect -> MySQLDialect (deprecated in Hibernate 5.6+)
+
+    Last reconciled by L. Chen 2013-04. Diverges roughly every quarter.
+-->
+<hibernate-configuration>
+    <session-factory>
+        <!-- MySQL Connector/J 8.x: driver class changed from com.mysql.jdbc.Driver -->
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <!-- serverTimezone required by MySQL Connector/J 8.x -->
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/cargotrak?serverTimezone=UTC</property>
+        <property name="hibernate.connection.username">cargotrak</property>
+        <property name="hibernate.connection.password">cargotrak123</property>
+        <!-- MySQLDialect replaces deprecated MySQL5InnoDBDialect in Hibernate 5.6+ -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.hbm2ddl.auto">none</property>
+
+        <mapping resource="hbm/User.hbm.xml"/>
+        <mapping resource="hbm/Role.hbm.xml"/>
+        <mapping resource="hbm/Permission.hbm.xml"/>
+        <mapping resource="hbm/LoginHistory.hbm.xml"/>
+        <mapping resource="hbm/AuditLog.hbm.xml"/>
+        <mapping resource="hbm/Customer.hbm.xml"/>
+        <mapping resource="hbm/CustomerContact.hbm.xml"/>
+        <mapping resource="hbm/CustomerAddress.hbm.xml"/>
+        <mapping resource="hbm/Driver.hbm.xml"/>
+        <mapping resource="hbm/Vehicle.hbm.xml"/>
+        <mapping resource="hbm/VehicleMaintenance.hbm.xml"/>
+        <mapping resource="hbm/Warehouse.hbm.xml"/>
+        <mapping resource="hbm/WarehouseZone.hbm.xml"/>
+        <mapping resource="hbm/InventoryItem.hbm.xml"/>
+        <mapping resource="hbm/Route.hbm.xml"/>
+        <mapping resource="hbm/RouteSegment.hbm.xml"/>
+        <mapping resource="hbm/RateCard.hbm.xml"/>
+        <mapping resource="hbm/RateCardEntry.hbm.xml"/>
+        <mapping resource="hbm/Shipment.hbm.xml"/>
+        <mapping resource="hbm/ShipmentLeg.hbm.xml"/>
+        <mapping resource="hbm/ShipmentStatusHistory.hbm.xml"/>
+        <mapping resource="hbm/ShipmentDocument.hbm.xml"/>
+        <mapping resource="hbm/Invoice.hbm.xml"/>
+        <mapping resource="hbm/InvoiceLineItem.hbm.xml"/>
+        <mapping resource="hbm/Payment.hbm.xml"/>
+        <mapping resource="hbm/PaymentAllocation.hbm.xml"/>
+        <mapping resource="hbm/SystemConfig.hbm.xml"/>
+        <mapping resource="hbm/Notification.hbm.xml"/>
+        <mapping resource="hbm/EmailTemplate.hbm.xml"/>
+        <mapping resource="hbm/ScheduledJobInfo.hbm.xml"/>
+    </session-factory>
+</hibernate-configuration>

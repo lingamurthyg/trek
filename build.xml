@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    CargoTrak Ant build script.
+    Originally written 2009-03 by Rajesh Kumar.
+    Cleaned up 2011-05 by M. Iyer.
+    Don't run "rebuild" from inside Eclipse - it doesn't pick up resources/. Use ant.
+
+    Migrated for Java 21:
+     - javac.source/target: 1.7 -> 21
+-->
+<project name="cargotrak" default="dist" basedir=".">
+
+    <property name="app.name"      value="cargotrak"/>
+    <property name="app.version"   value="3.4.2"/>
+
+    <property name="src.dir"       value="src/main/java"/>
+    <property name="resources.dir" value="src/main/resources"/>
+    <property name="webapp.dir"    value="src/main/webapp"/>
+    <property name="lib.dir"       value="lib"/>
+
+    <property name="build.dir"     value="build"/>
+    <property name="classes.dir"   value="${build.dir}/classes"/>
+    <property name="war.dir"       value="${build.dir}/war"/>
+    <property name="dist.dir"      value="dist"/>
+
+    <!-- Updated from 1.7 to 21 for Java 21 compatibility -->
+    <property name="javac.source"  value="21"/>
+    <property name="javac.target"  value="21"/>
+    <property name="javac.debug"   value="true"/>
+    <property name="javac.deprecation" value="false"/>
+
+    <path id="compile.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="init">
+        <tstamp/>
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${war.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+    </target>
+
+    <target name="clean" description="remove all build artifacts">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <target name="compile" depends="init" description="compile java sources">
+        <javac srcdir="${src.dir}"
+               destdir="${classes.dir}"
+               source="${javac.source}"
+               target="${javac.target}"
+               debug="${javac.debug}"
+               deprecation="${javac.deprecation}"
+               includeantruntime="false"
+               encoding="UTF-8">
+            <classpath refid="compile.classpath"/>
+        </javac>
+        <copy todir="${classes.dir}">
+            <fileset dir="${resources.dir}">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="war" depends="compile" description="assemble exploded war">
+        <copy todir="${war.dir}">
+            <fileset dir="${webapp.dir}">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${war.dir}/WEB-INF/classes"/>
+        <copy todir="${war.dir}/WEB-INF/classes">
+            <fileset dir="${classes.dir}">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <mkdir dir="${war.dir}/WEB-INF/lib"/>
+        <copy todir="${war.dir}/WEB-INF/lib" flatten="true">
+            <fileset dir="${lib.dir}">
+                <include name="**/*.jar"/>
+                <!-- servlet/jsp APIs are provided by Tomcat -->
+                <exclude name="servlet-api*.jar"/>
+                <exclude name="jsp-api*.jar"/>
+                <exclude name="el-api*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="dist" depends="war" description="build deployable war">
+        <jar destfile="${dist.dir}/${app.name}.war" basedir="${war.dir}"/>
+        <echo message="Built ${dist.dir}/${app.name}.war (version ${app.version})"/>
+    </target>
+
+    <target name="rebuild" depends="clean,dist"/>
+
+</project>

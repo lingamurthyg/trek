@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="CustomerAddress" table="customer_addresses">
+        <id name="addressId" column="address_id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="customer" class="Customer" column="customer_id" not-null="true" lazy="false"/>
+        <property name="addressType" column="address_type" length="255"/>
+        <property name="line1"       column="line1"        length="255"/>
+        <property name="line2"       column="line2"        length="255"/>
+        <property name="city"        column="city"         length="255"/>
+        <property name="state"       column="state"        length="255"/>
+        <property name="postalCode"  column="postal_code"  length="255"/>
+        <property name="country"     column="country"      length="255"/>
+    </class>
+
+</hibernate-mapping>

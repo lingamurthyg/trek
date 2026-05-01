@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="InvoiceLineItem" table="invoice_line_items">
+        <id name="lineId" column="line_id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="invoice" class="Invoice" column="invoice_id" not-null="true" lazy="false"/>
+        <property name="shipmentId"  column="shipment_id"/>
+        <property name="description" column="description" length="255"/>
+        <property name="quantity"    column="quantity"    precision="15" scale="2"/>
+        <property name="unitPrice"   column="unit_price"  precision="15" scale="2"/>
+        <property name="lineTotal"   column="line_total"  precision="15" scale="2"/>
+    </class>
+
+</hibernate-mapping>

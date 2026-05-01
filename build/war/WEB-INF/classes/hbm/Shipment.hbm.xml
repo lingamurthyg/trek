@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="Shipment" table="shipments">
+        <id name="shipmentId" column="shipment_id">
+            <generator class="identity"/>
+        </id>
+        <property name="trackingNo"     column="tracking_no"    not-null="true" length="255"/>
+        <property name="customerId"     column="customer_id"    not-null="true"/>
+        <property name="origin"         column="origin"         length="255"/>
+        <property name="destination"    column="destination"    length="255"/>
+        <property name="weightKg"       column="weight_kg"      precision="15" scale="2"/>
+        <property name="volumeM3"       column="volume_m3"      precision="15" scale="2"/>
+        <property name="declaredValue"  column="declared_value" precision="15" scale="2"/>
+        <property name="status"         column="status"         length="255"/>
+        <property name="bookedDate"     column="booked_date"    type="timestamp"/>
+        <property name="pickupDate"     column="pickup_date"    type="timestamp"/>
+        <property name="deliveryDate"   column="delivery_date"  type="timestamp"/>
+        <property name="driverId"       column="driver_id"/>
+        <property name="vehicleId"      column="vehicle_id"/>
+        <property name="routeId"        column="route_id"/>
+        <property name="rateCardId"     column="rate_card_id"/>
+        <property name="totalCharge"    column="total_charge"   precision="15" scale="2"/>
+        <property name="notes"          column="notes"          type="text"/>
+
+        <set name="legs" inverse="true" lazy="false" cascade="all-delete-orphan">
+            <key column="shipment_id"/>
+            <one-to-many class="ShipmentLeg"/>
+        </set>
+        <set name="documents" lazy="true" cascade="all-delete-orphan">
+            <key column="shipment_id"/>
+            <one-to-many class="ShipmentDocument"/>
+        </set>
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="RateCardEntry" table="rate_card_entries">
+        <id name="entryId" column="entry_id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="rateCard" class="RateCard" column="rate_card_id" not-null="true" lazy="false"/>
+        <property name="routeId"     column="route_id"/>
+        <property name="vehicleType" column="vehicle_type" length="255"/>
+        <property name="baseCharge"  column="base_charge"  precision="15" scale="2"/>
+        <property name="perKmRate"   column="per_km_rate"  precision="15" scale="2"/>
+        <property name="perKgRate"   column="per_kg_rate"  precision="15" scale="2"/>
+    </class>
+
+</hibernate-mapping>
