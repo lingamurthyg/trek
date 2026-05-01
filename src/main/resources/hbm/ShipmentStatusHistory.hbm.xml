@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="ShipmentStatusHistory" table="shipment_status_history">
+        <id name="historyId" column="history_id">
+            <generator class="identity"/>
+        </id>
+        <property name="shipmentId" column="shipment_id" not-null="true"/>
+        <property name="oldStatus"  column="old_status"  length="255"/>
+        <property name="newStatus"  column="new_status"  length="255"/>
+        <property name="changedBy"  column="changed_by"  length="255"/>
+        <property name="changedAt"  column="changed_at"  type="timestamp"/>
+        <property name="notes"      column="notes"       length="255"/>
+    </class>
+
+</hibernate-mapping>

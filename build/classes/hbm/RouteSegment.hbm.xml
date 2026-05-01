@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="RouteSegment" table="route_segments">
+        <id name="segmentId" column="segment_id">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="route" class="Route" column="route_id" not-null="true" lazy="false"/>
+        <property name="seqNo"         column="seq_no"/>
+        <property name="fromLocation"  column="from_location"  length="255"/>
+        <property name="toLocation"    column="to_location"    length="255"/>
+        <property name="distanceKm"    column="distance_km"    precision="15" scale="2"/>
+        <property name="expectedHours" column="expected_hours" precision="15" scale="2"/>
+    </class>
+
+</hibernate-mapping>

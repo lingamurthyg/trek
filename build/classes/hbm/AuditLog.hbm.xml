@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="AuditLog" table="audit_log">
+        <id name="auditId" column="audit_id">
+            <generator class="identity"/>
+        </id>
+        <property name="userId"     column="user_id"/>
+        <property name="username"   column="username"    length="255"/>
+        <property name="action"     column="action"      length="255"/>
+        <property name="entityType" column="entity_type" length="255"/>
+        <property name="entityId"   column="entity_id"   length="255"/>
+        <property name="details"    column="details"     type="text"/>
+        <property name="auditTime"  column="audit_time"  type="timestamp"/>
+    </class>
+
+</hibernate-mapping>

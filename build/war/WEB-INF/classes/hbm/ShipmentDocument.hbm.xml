@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="ShipmentDocument" table="shipment_documents">
+        <id name="documentId" column="document_id">
+            <generator class="identity"/>
+        </id>
+        <property name="shipmentId"   column="shipment_id"   not-null="true"/>
+        <property name="documentType" column="document_type" length="255"/>
+        <property name="fileName"     column="file_name"     length="255"/>
+        <property name="filePath"     column="file_path"     length="255"/>
+        <property name="uploadedBy"   column="uploaded_by"   length="255"/>
+        <property name="uploadedAt"   column="uploaded_at"   type="timestamp"/>
+    </class>
+
+</hibernate-mapping>

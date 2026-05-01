@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Standalone Quartz job definitions, kept here for documentation parity with
+    /etc/cargotrak/quartz-jobs.xml on the production batch server.
+    The web app actually reads its triggers from applicationContext.xml.
+    This file is parsed by the offline batch runner cargotrak-batch.jar.
+-->
+<quartz-jobs>
+    <job name="NightlyInvoiceJob"     class="com.acme.cargotrak.job.NightlyInvoiceJob"     cron="0 0 1 * * ?"/>
+    <job name="HourlyCarrierFeedJob"  class="com.acme.cargotrak.job.HourlyCarrierFeedJob"  cron="0 0 * * * ?"/>
+    <job name="WeeklyArAgingJob"      class="com.acme.cargotrak.job.WeeklyArAgingJob"      cron="0 0 6 ? * MON"/>
+    <job name="DailyBackupJob"        class="com.acme.cargotrak.job.DailyBackupJob"        cron="0 30 2 * * ?"/>
+    <job name="DemoEveryMinuteJob"    class="com.acme.cargotrak.job.DemoEveryMinuteJob"    cron="0 * * * * ?"/>
+</quartz-jobs>

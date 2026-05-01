@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="SystemConfig" table="system_config">
+        <id name="configKey" column="config_key">
+            <generator class="assigned"/>
+        </id>
+        <property name="configValue" column="config_value" length="255"/>
+        <property name="description" column="description"  length="255"/>
+        <property name="updatedAt"   column="updated_at"   type="timestamp"/>
+    </class>
+
+</hibernate-mapping>

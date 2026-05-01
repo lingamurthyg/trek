@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN"
+        "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+<struts-config>
+
+    <!--
+        Struts 1.3.10 configuration for CargoTrak.
+
+        Originally written by Rajesh Kumar 2008-12.
+        Maintained by everyone since.
+
+        Convention: each Action has a *.do mapping; JSPs live under /WEB-INF/jsp/<module>/.
+        Forwards generally point to a Tiles definition where one exists, else direct JSP.
+    -->
+
+    <form-beans>
+        <form-bean name="loginForm"            type="com.acme.cargotrak.form.LoginForm"/>
+        <form-bean name="userForm"             type="com.acme.cargotrak.form.UserForm"/>
+        <form-bean name="passwordResetForm"    type="com.acme.cargotrak.form.PasswordResetForm"/>
+        <form-bean name="customerForm"         type="com.acme.cargotrak.form.CustomerForm"/>
+        <form-bean name="customerContactForm" type="com.acme.cargotrak.form.CustomerContactForm"/>
+        <form-bean name="customerAddressForm" type="com.acme.cargotrak.form.CustomerAddressForm"/>
+        <form-bean name="shipmentForm"         type="com.acme.cargotrak.form.ShipmentForm"/>
+        <form-bean name="driverForm"           type="com.acme.cargotrak.form.DriverForm"/>
+        <form-bean name="vehicleForm"          type="com.acme.cargotrak.form.VehicleForm"/>
+        <form-bean name="maintenanceForm"      type="com.acme.cargotrak.form.MaintenanceForm"/>
+        <form-bean name="warehouseForm"        type="com.acme.cargotrak.form.WarehouseForm"/>
+        <form-bean name="inventoryForm"        type="com.acme.cargotrak.form.InventoryForm"/>
+        <form-bean name="routeForm"            type="com.acme.cargotrak.form.RouteForm"/>
+        <form-bean name="invoiceForm"          type="com.acme.cargotrak.form.InvoiceForm"/>
+        <form-bean name="paymentForm"          type="com.acme.cargotrak.form.PaymentForm"/>
+        <form-bean name="reportForm"           type="com.acme.cargotrak.form.ReportForm"/>
+        <form-bean name="uploadForm"           type="com.acme.cargotrak.form.UploadForm"/>
+        <form-bean name="systemConfigForm"     type="com.acme.cargotrak.form.SystemConfigForm"/>
+        <form-bean name="sqlRunnerForm"        type="com.acme.cargotrak.form.SqlRunnerForm"/>
+    </form-beans>
+
+    <global-forwards>
+        <forward name="login"     path="/index.jsp"/>
+        <forward name="error"     path="/error.jsp"/>
+        <forward name="dashboard" path="/dashboard.do" redirect="true"/>
+    </global-forwards>
+
+    <action-mappings>
+
+        <!-- Auth -->
+
+        <action path="/login" name="loginForm" type="com.acme.cargotrak.action.LoginAction"
+                scope="request" validate="false" input="/index.jsp">
+            <forward name="success" path="/dashboard.do" redirect="true"/>
+            <forward name="failure" path="/index.jsp"/>
+        </action>
+
+        <action path="/logout" type="com.acme.cargotrak.action.LogoutAction">
+            <forward name="success" path="/index.jsp" redirect="true"/>
+        </action>
+
+        <action path="/passwordReset" name="passwordResetForm" type="com.acme.cargotrak.action.PasswordResetAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/auth/passwordReset.jsp"/>
+        </action>
+
+        <action path="/dashboard" type="com.acme.cargotrak.action.DashboardAction">
+            <forward name="success" path="/WEB-INF/jsp/dashboard.jsp"/>
+        </action>
+
+        <action path="/search" type="com.acme.cargotrak.action.SearchAction">
+            <forward name="success" path="/WEB-INF/jsp/search.jsp"/>
+        </action>
+
+        <!-- Users -->
+
+        <action path="/users" type="com.acme.cargotrak.action.UserListAction">
+            <forward name="success" path="/WEB-INF/jsp/user/list.jsp"/>
+        </action>
+        <action path="/users/edit" name="userForm" type="com.acme.cargotrak.action.UserEditAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/user/edit.jsp"/>
+        </action>
+        <action path="/users/save" name="userForm" type="com.acme.cargotrak.action.UserSaveAction"
+                scope="request" validate="false">
+            <forward name="success" path="/users.do" redirect="true"/>
+        </action>
+        <action path="/users/deactivate" type="com.acme.cargotrak.action.UserDeactivateAction">
+            <forward name="success" path="/users.do" redirect="true"/>
+        </action>
+
+        <!-- Customers -->
+
+        <action path="/customers" name="customerForm" type="com.acme.cargotrak.action.CustomerListAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/customer/list.jsp"/>
+        </action>
+        <action path="/customers/edit" name="customerForm" type="com.acme.cargotrak.action.CustomerEditAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/customer/edit.jsp"/>
+        </action>
+        <action path="/customers/save" name="customerForm" type="com.acme.cargotrak.action.CustomerSaveAction"
+                scope="request" validate="false">
+            <forward name="success" path="/customers.do" redirect="true"/>
+        </action>
+        <action path="/customers/contact/save" name="customerContactForm" type="com.acme.cargotrak.action.CustomerContactSaveAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/customer/savedContact.jsp"/>
+        </action>
+        <action path="/customers/address/save" name="customerAddressForm" type="com.acme.cargotrak.action.CustomerAddressSaveAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/customer/savedAddress.jsp"/>
+        </action>
+
+        <!-- Shipments -->
+
+        <action path="/shipments" name="shipmentForm" type="com.acme.cargotrak.action.ShipmentListAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/shipment/list.jsp"/>
+        </action>
+        <action path="/shipments/edit" name="shipmentForm" type="com.acme.cargotrak.action.ShipmentEditAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/shipment/edit.jsp"/>
+        </action>
+        <action path="/shipments/save" name="shipmentForm" type="com.acme.cargotrak.action.ShipmentSaveAction"
+                scope="request" validate="false">
+            <forward name="success" path="/shipments.do" redirect="true"/>
+        </action>
+        <action path="/shipments/transition" name="shipmentForm" type="com.acme.cargotrak.action.ShipmentTransitionAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/shipment/transitioned.jsp"/>
+        </action>
+
+        <!-- Drivers -->
+
+        <action path="/drivers" type="com.acme.cargotrak.action.DriverListAction">
+            <forward name="success" path="/WEB-INF/jsp/driver/list.jsp"/>
+        </action>
+        <action path="/drivers/edit" name="driverForm" type="com.acme.cargotrak.action.DriverEditAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/driver/edit.jsp"/>
+        </action>
+        <action path="/drivers/save" name="driverForm" type="com.acme.cargotrak.action.DriverSaveAction"
+                scope="request" validate="false">
+            <forward name="success" path="/drivers.do" redirect="true"/>
+        </action>
+
+        <!-- Vehicles -->
+
+        <action path="/vehicles" type="com.acme.cargotrak.action.VehicleListAction">
+            <forward name="success" path="/WEB-INF/jsp/vehicle/list.jsp"/>
+        </action>
+        <action path="/vehicles/edit" name="vehicleForm" type="com.acme.cargotrak.action.VehicleEditAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/vehicle/edit.jsp"/>
+        </action>
+        <action path="/vehicles/save" name="vehicleForm" type="com.acme.cargotrak.action.VehicleSaveAction"
+                scope="request" validate="false">
+            <forward name="success" path="/vehicles.do" redirect="true"/>
+        </action>
+        <action path="/vehicles/maintenance/save" name="maintenanceForm" type="com.acme.cargotrak.action.MaintenanceSaveAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/vehicle/savedMaintenance.jsp"/>
+        </action>
+
+        <!-- Warehouses -->
+
+        <action path="/warehouses" type="com.acme.cargotrak.action.WarehouseListAction">
+            <forward name="success" path="/WEB-INF/jsp/warehouse/list.jsp"/>
+        </action>
+        <action path="/warehouses/edit" name="warehouseForm" type="com.acme.cargotrak.action.WarehouseEditAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/warehouse/edit.jsp"/>
+        </action>
+        <action path="/warehouses/save" name="warehouseForm" type="com.acme.cargotrak.action.WarehouseSaveAction"
+                scope="request" validate="false">
+            <forward name="success" path="/warehouses.do" redirect="true"/>
+        </action>
+        <action path="/inventory" name="inventoryForm" type="com.acme.cargotrak.action.InventoryListAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/warehouse/inventory.jsp"/>
+        </action>
+        <action path="/inventory/transfer" name="inventoryForm" type="com.acme.cargotrak.action.InventoryTransferAction"
+                scope="request" validate="false">
+            <forward name="success" path="/inventory.do" redirect="true"/>
+        </action>
+
+        <!-- Routes -->
+
+        <action path="/routes" type="com.acme.cargotrak.action.RouteListAction">
+            <forward name="success" path="/WEB-INF/jsp/route/list.jsp"/>
+        </action>
+
+        <!-- Invoices / payments -->
+
+        <action path="/invoices" name="invoiceForm" type="com.acme.cargotrak.action.InvoiceListAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/invoice/list.jsp"/>
+        </action>
+        <action path="/invoices/detail" type="com.acme.cargotrak.action.InvoiceDetailAction">
+            <forward name="success" path="/WEB-INF/jsp/invoice/detail.jsp"/>
+        </action>
+        <action path="/invoices/generate" name="invoiceForm" type="com.acme.cargotrak.action.InvoiceGenerateAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/invoice/generated.jsp"/>
+        </action>
+        <action path="/invoices/pdf" type="com.acme.cargotrak.action.InvoicePdfAction"/>
+
+        <action path="/payments/record" name="paymentForm" type="com.acme.cargotrak.action.PaymentRecordAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/invoice/paymentRecorded.jsp"/>
+        </action>
+
+        <!-- Reports -->
+
+        <action path="/reports/revenue" name="reportForm" type="com.acme.cargotrak.action.ReportRevenueAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/report/revenue.jsp"/>
+        </action>
+        <action path="/reports/fleet" name="reportForm" type="com.acme.cargotrak.action.ReportFleetAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/report/fleet.jsp"/>
+        </action>
+        <action path="/reports/aragon" name="reportForm" type="com.acme.cargotrak.action.ReportArAgingAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/report/arAging.jsp"/>
+        </action>
+        <action path="/reports/onTime" name="reportForm" type="com.acme.cargotrak.action.ReportOnTimeAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/report/onTime.jsp"/>
+        </action>
+        <action path="/reports/byRoute" name="reportForm" type="com.acme.cargotrak.action.ReportShipmentsByRouteAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/report/byRoute.jsp"/>
+        </action>
+        <action path="/reports/driverPerformance" name="reportForm" type="com.acme.cargotrak.action.ReportDriverPerformanceAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/report/driverPerformance.jsp"/>
+        </action>
+
+        <!-- File upload -->
+
+        <action path="/upload" name="uploadForm" type="com.acme.cargotrak.action.FileUploadAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/upload/result.jsp"/>
+        </action>
+        <action path="/upload/form" forward="/WEB-INF/jsp/upload/form.jsp"/>
+
+        <!-- Notifications -->
+
+        <action path="/notifications" type="com.acme.cargotrak.action.NotificationsAction">
+            <forward name="success" path="/WEB-INF/jsp/notifications.jsp"/>
+        </action>
+
+        <!-- Filesystem browser -->
+
+        <action path="/files" type="com.acme.cargotrak.action.FilesAction">
+            <forward name="success" path="/WEB-INF/jsp/files/list.jsp"/>
+        </action>
+        <action path="/files/view" type="com.acme.cargotrak.action.FileViewAction">
+            <forward name="success" path="/WEB-INF/jsp/files/view.jsp"/>
+        </action>
+
+        <!-- Admin -->
+
+        <action path="/admin/config" name="systemConfigForm" type="com.acme.cargotrak.action.AdminConfigAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/admin/config.jsp"/>
+        </action>
+        <action path="/admin/dbHealth" type="com.acme.cargotrak.action.AdminDbHealthAction">
+            <forward name="success" path="/WEB-INF/jsp/admin/dbHealth.jsp"/>
+        </action>
+        <action path="/admin/sql" name="sqlRunnerForm" type="com.acme.cargotrak.action.AdminSqlRunnerAction"
+                scope="request" validate="false">
+            <forward name="success" path="/WEB-INF/jsp/admin/sqlRunner.jsp"/>
+        </action>
+        <action path="/admin/logs" type="com.acme.cargotrak.action.AdminLogsAction">
+            <forward name="success" path="/WEB-INF/jsp/admin/logs.jsp"/>
+        </action>
+        <action path="/admin/audit" type="com.acme.cargotrak.action.AdminAuditAction">
+            <forward name="success" path="/WEB-INF/jsp/admin/audit.jsp"/>
+        </action>
+
+    </action-mappings>
+
+    <message-resources parameter="messages"/>
+
+</struts-config>

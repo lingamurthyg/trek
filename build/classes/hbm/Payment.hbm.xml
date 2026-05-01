@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="Payment" table="payments">
+        <id name="paymentId" column="payment_id">
+            <generator class="identity"/>
+        </id>
+        <property name="customerId"   column="customer_id"   not-null="true"/>
+        <property name="paymentDate"  column="payment_date"  type="timestamp"/>
+        <property name="amount"       column="amount"        precision="15" scale="2"/>
+        <property name="method"       column="method"        length="255"/>
+        <property name="reference"    column="reference"     length="255"/>
+        <property name="notes"        column="notes"         length="255"/>
+    </class>
+
+</hibernate-mapping>

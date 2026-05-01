@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="Vehicle" table="vehicles">
+        <id name="vehicleId" column="vehicle_id">
+            <generator class="identity"/>
+        </id>
+        <property name="plateNumber"  column="plate_number" not-null="true" length="255"/>
+        <property name="make"         column="make"         length="255"/>
+        <property name="model"        column="model"        length="255"/>
+        <property name="year"         column="year"/>
+        <property name="capacityKg"   column="capacity_kg"  precision="15" scale="2"/>
+        <property name="vehicleType"  column="vehicle_type" length="255"/>
+        <property name="status"       column="status"       length="255"/>
+
+        <set name="maintenanceRecords" inverse="true" lazy="false" cascade="all-delete-orphan">
+            <key column="vehicle_id"/>
+            <one-to-many class="VehicleMaintenance"/>
+        </set>
+    </class>
+
+</hibernate-mapping>

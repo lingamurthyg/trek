@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.acme.cargotrak.domain">
+
+    <class name="Driver" table="drivers">
+        <id name="driverId" column="driver_id">
+            <generator class="identity"/>
+        </id>
+        <property name="employeeCode"  column="employee_code"  not-null="true" length="255"/>
+        <property name="fullName"      column="full_name"      length="255"/>
+        <property name="licenseNumber" column="license_number" length="255"/>
+        <property name="licenseExpiry" column="license_expiry" length="255"/>
+        <property name="phone"         column="phone"          length="255"/>
+        <property name="activeFlag"    column="active_flag"    length="255"/>
+    </class>
+
+</hibernate-mapping>

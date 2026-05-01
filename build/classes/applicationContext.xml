@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <!--
+        CargoTrak Spring application context.
+
+        This file pre-dates component scanning and we never migrated. Do not add
+        @Component or @Service - we use explicit XML for everything.
+
+        Author: Rajesh Kumar 2008-12 (original)
+                M. Iyer 2010-04 (added connection pool tuning)
+                L. Chen 2012-09 (added quartz, axis beans)
+                S. Patel 2014-03 (added ingestion beans)
+
+        DB credentials: yes, they're in here. They're also in hibernate.cfg.xml
+        AND db.properties. Don't ask. They were last reconciled in 2013 by lchen
+        but ops re-edits hibernate.cfg.xml directly so they drift.
+    -->
+
+    <bean id="springContextHolder" class="com.acme.cargotrak.util.SpringContextHolder"/>
+
+    <!-- ===== DataSource ===== -->
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url"             value="jdbc:mysql://localhost:3306/cargotrak?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true"/>
+        <property name="username"        value="cargotrak"/>
+        <property name="password"        value="cargotrak123"/>
+        <property name="initialSize"     value="2"/>
+        <property name="maxActive"       value="20"/>
+        <property name="maxIdle"         value="5"/>
+        <property name="validationQuery" value="SELECT 1"/>
+        <property name="testOnBorrow"    value="true"/>
+    </bean>
+
+    <!-- ===== Hibernate ===== -->
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mappingResources">
+            <list>
+                <value>hbm/User.hbm.xml</value>
+                <value>hbm/Role.hbm.xml</value>
+                <value>hbm/Permission.hbm.xml</value>
+                <value>hbm/LoginHistory.hbm.xml</value>
+                <value>hbm/AuditLog.hbm.xml</value>
+                <value>hbm/Customer.hbm.xml</value>
+                <value>hbm/CustomerContact.hbm.xml</value>
+                <value>hbm/CustomerAddress.hbm.xml</value>
+                <value>hbm/Driver.hbm.xml</value>
+                <value>hbm/Vehicle.hbm.xml</value>
+                <value>hbm/VehicleMaintenance.hbm.xml</value>
+                <value>hbm/Warehouse.hbm.xml</value>
+                <value>hbm/WarehouseZone.hbm.xml</value>
+                <value>hbm/InventoryItem.hbm.xml</value>
+                <value>hbm/Route.hbm.xml</value>
+                <value>hbm/RouteSegment.hbm.xml</value>
+                <value>hbm/RateCard.hbm.xml</value>
+                <value>hbm/RateCardEntry.hbm.xml</value>
+                <value>hbm/Shipment.hbm.xml</value>
+                <value>hbm/ShipmentLeg.hbm.xml</value>
+                <value>hbm/ShipmentStatusHistory.hbm.xml</value>
+                <value>hbm/ShipmentDocument.hbm.xml</value>
+                <value>hbm/Invoice.hbm.xml</value>
+                <value>hbm/InvoiceLineItem.hbm.xml</value>
+                <value>hbm/Payment.hbm.xml</value>
+                <value>hbm/PaymentAllocation.hbm.xml</value>
+                <value>hbm/SystemConfig.hbm.xml</value>
+                <value>hbm/Notification.hbm.xml</value>
+                <value>hbm/EmailTemplate.hbm.xml</value>
+                <value>hbm/ScheduledJobInfo.hbm.xml</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.hbm2ddl.auto">none</prop>
+                <prop key="hibernate.current_session_context_class">thread</prop>
+                <prop key="hibernate.connection.release_mode">after_transaction</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!-- ===== DAOs ===== -->
+
+    <bean id="userDao" class="com.acme.cargotrak.dao.hibernate.UserDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="roleDao" class="com.acme.cargotrak.dao.hibernate.RoleDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="permissionDao" class="com.acme.cargotrak.dao.hibernate.PermissionDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="loginHistoryDao" class="com.acme.cargotrak.dao.hibernate.LoginHistoryDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="auditLogDao" class="com.acme.cargotrak.dao.hibernate.AuditLogDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="customerDao" class="com.acme.cargotrak.dao.hibernate.CustomerDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="customerContactDao" class="com.acme.cargotrak.dao.hibernate.CustomerContactDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="customerAddressDao" class="com.acme.cargotrak.dao.hibernate.CustomerAddressDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="driverDao" class="com.acme.cargotrak.dao.hibernate.DriverDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="vehicleDao" class="com.acme.cargotrak.dao.hibernate.VehicleDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="vehicleMaintenanceDao" class="com.acme.cargotrak.dao.hibernate.VehicleMaintenanceDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="warehouseDao" class="com.acme.cargotrak.dao.hibernate.WarehouseDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="warehouseZoneDao" class="com.acme.cargotrak.dao.hibernate.WarehouseZoneDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="inventoryDao" class="com.acme.cargotrak.dao.hibernate.InventoryDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="routeDao" class="com.acme.cargotrak.dao.hibernate.RouteDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="rateCardDao" class="com.acme.cargotrak.dao.hibernate.RateCardDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="shipmentDao" class="com.acme.cargotrak.dao.hibernate.ShipmentDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="dataSource"     ref="dataSource"/>
+    </bean>
+    <bean id="shipmentLegDao" class="com.acme.cargotrak.dao.hibernate.ShipmentLegDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="shipmentStatusHistoryDao" class="com.acme.cargotrak.dao.hibernate.ShipmentStatusHistoryDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="shipmentDocumentDao" class="com.acme.cargotrak.dao.hibernate.ShipmentDocumentDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="invoiceDao" class="com.acme.cargotrak.dao.hibernate.InvoiceDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="dataSource"     ref="dataSource"/>
+    </bean>
+    <bean id="paymentDao" class="com.acme.cargotrak.dao.hibernate.PaymentDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="paymentAllocationDao" class="com.acme.cargotrak.dao.hibernate.PaymentAllocationDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="systemConfigDao" class="com.acme.cargotrak.dao.hibernate.SystemConfigDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="notificationDao" class="com.acme.cargotrak.dao.hibernate.NotificationDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="emailTemplateDao" class="com.acme.cargotrak.dao.hibernate.EmailTemplateDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="scheduledJobInfoDao" class="com.acme.cargotrak.dao.hibernate.ScheduledJobInfoDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <bean id="reportDao" class="com.acme.cargotrak.dao.hibernate.ReportDaoImpl">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- ===== Services ===== -->
+
+    <bean id="mailService" class="com.acme.cargotrak.service.MailService">
+        <property name="emailTemplateDao" ref="emailTemplateDao"/>
+        <property name="notificationDao"  ref="notificationDao"/>
+        <property name="systemConfigDao"  ref="systemConfigDao"/>
+    </bean>
+
+    <bean id="auditService" class="com.acme.cargotrak.service.AuditService">
+        <property name="auditLogDao" ref="auditLogDao"/>
+    </bean>
+
+    <bean id="systemConfigService" class="com.acme.cargotrak.service.SystemConfigService">
+        <property name="systemConfigDao" ref="systemConfigDao"/>
+    </bean>
+
+    <bean id="authService" class="com.acme.cargotrak.service.AuthService">
+        <property name="userDao"         ref="userDao"/>
+        <property name="loginHistoryDao" ref="loginHistoryDao"/>
+        <property name="auditLogDao"     ref="auditLogDao"/>
+        <property name="mailService"     ref="mailService"/>
+    </bean>
+
+    <bean id="userService" class="com.acme.cargotrak.service.UserService">
+        <property name="userDao" ref="userDao"/>
+        <property name="roleDao" ref="roleDao"/>
+    </bean>
+
+    <bean id="customerService" class="com.acme.cargotrak.service.CustomerService">
+        <property name="customerDao"        ref="customerDao"/>
+        <property name="customerContactDao" ref="customerContactDao"/>
+        <property name="customerAddressDao" ref="customerAddressDao"/>
+    </bean>
+
+    <bean id="shipmentStateMachine" class="com.acme.cargotrak.service.ShipmentStateMachine"/>
+
+    <bean id="shipmentService" class="com.acme.cargotrak.service.ShipmentService">
+        <property name="shipmentDao"              ref="shipmentDao"/>
+        <property name="shipmentLegDao"           ref="shipmentLegDao"/>
+        <property name="shipmentStatusHistoryDao" ref="shipmentStatusHistoryDao"/>
+        <property name="rateCardDao"              ref="rateCardDao"/>
+        <property name="auditLogDao"              ref="auditLogDao"/>
+        <property name="stateMachine"             ref="shipmentStateMachine"/>
+        <property name="mailService"              ref="mailService"/>
+    </bean>
+
+    <bean id="driverService" class="com.acme.cargotrak.service.DriverService">
+        <property name="driverDao" ref="driverDao"/>
+    </bean>
+
+    <bean id="vehicleService" class="com.acme.cargotrak.service.VehicleService">
+        <property name="vehicleDao"     ref="vehicleDao"/>
+        <property name="maintenanceDao" ref="vehicleMaintenanceDao"/>
+    </bean>
+
+    <bean id="warehouseService" class="com.acme.cargotrak.service.WarehouseService">
+        <property name="warehouseDao" ref="warehouseDao"/>
+        <property name="zoneDao"      ref="warehouseZoneDao"/>
+        <property name="inventoryDao" ref="inventoryDao"/>
+    </bean>
+
+    <bean id="billingService" class="com.acme.cargotrak.service.BillingService">
+        <property name="invoiceDao"           ref="invoiceDao"/>
+        <property name="paymentDao"           ref="paymentDao"/>
+        <property name="paymentAllocationDao" ref="paymentAllocationDao"/>
+        <property name="shipmentDao"          ref="shipmentDao"/>
+        <property name="shipmentService"      ref="shipmentService"/>
+        <property name="auditLogDao"          ref="auditLogDao"/>
+        <property name="mailService"          ref="mailService"/>
+    </bean>
+
+    <bean id="reportService" class="com.acme.cargotrak.service.ReportService">
+        <property name="reportDao"  ref="reportDao"/>
+        <property name="invoiceDao" ref="invoiceDao"/>
+    </bean>
+
+    <bean id="adminService" class="com.acme.cargotrak.service.AdminService">
+        <property name="reportDao" ref="reportDao"/>
+    </bean>
+
+    <bean id="routeService" class="com.acme.cargotrak.service.RouteService">
+        <property name="routeDao" ref="routeDao"/>
+    </bean>
+
+    <bean id="rateCardService" class="com.acme.cargotrak.service.RateCardService">
+        <property name="rateCardDao" ref="rateCardDao"/>
+    </bean>
+
+    <bean id="notificationService" class="com.acme.cargotrak.service.NotificationService">
+        <property name="notificationDao" ref="notificationDao"/>
+    </bean>
+
+    <!-- ===== Ingestion ===== -->
+
+    <bean id="bulkShipmentImporter" class="com.acme.cargotrak.ingestion.BulkShipmentImporter">
+        <property name="customerDao"     ref="customerDao"/>
+        <property name="routeDao"        ref="routeDao"/>
+        <property name="shipmentService" ref="shipmentService"/>
+    </bean>
+
+    <bean id="ingestionService" class="com.acme.cargotrak.service.IngestionService">
+        <property name="importer"    ref="bulkShipmentImporter"/>
+        <property name="mailService" ref="mailService"/>
+    </bean>
+
+    <!-- ===== The god-class ===== -->
+
+    <bean id="cargoFacade" class="com.acme.cargotrak.service.CargoFacade">
+        <property name="userDao"             ref="userDao"/>
+        <property name="customerDao"         ref="customerDao"/>
+        <property name="driverDao"           ref="driverDao"/>
+        <property name="vehicleDao"          ref="vehicleDao"/>
+        <property name="warehouseDao"        ref="warehouseDao"/>
+        <property name="shipmentDao"         ref="shipmentDao"/>
+        <property name="invoiceDao"          ref="invoiceDao"/>
+        <property name="paymentDao"          ref="paymentDao"/>
+        <property name="notificationDao"     ref="notificationDao"/>
+        <property name="systemConfigDao"     ref="systemConfigDao"/>
+        <property name="authService"         ref="authService"/>
+        <property name="userService"         ref="userService"/>
+        <property name="customerService"     ref="customerService"/>
+        <property name="shipmentService"     ref="shipmentService"/>
+        <property name="driverService"       ref="driverService"/>
+        <property name="vehicleService"      ref="vehicleService"/>
+        <property name="warehouseService"    ref="warehouseService"/>
+        <property name="billingService"      ref="billingService"/>
+        <property name="reportService"       ref="reportService"/>
+        <property name="mailService"         ref="mailService"/>
+        <property name="systemConfigService" ref="systemConfigService"/>
+        <property name="auditService"        ref="auditService"/>
+    </bean>
+
+    <!-- ===== Quartz scheduler ===== -->
+
+    <bean id="nightlyInvoiceJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="com.acme.cargotrak.job.NightlyInvoiceJob"/>
+    </bean>
+    <bean id="hourlyCarrierFeedJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="com.acme.cargotrak.job.HourlyCarrierFeedJob"/>
+    </bean>
+    <bean id="weeklyArAgingJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="com.acme.cargotrak.job.WeeklyArAgingJob"/>
+    </bean>
+    <bean id="dailyBackupJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="com.acme.cargotrak.job.DailyBackupJob"/>
+    </bean>
+    <bean id="demoEveryMinuteJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="com.acme.cargotrak.job.DemoEveryMinuteJob"/>
+    </bean>
+    <bean id="inboundPollerJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass" value="com.acme.cargotrak.job.InboundPollerJob"/>
+    </bean>
+
+    <bean id="nightlyInvoiceTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="nightlyInvoiceJob"/>
+        <property name="cronExpression" value="0 0 1 * * ?"/>
+    </bean>
+    <bean id="hourlyCarrierFeedTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="hourlyCarrierFeedJob"/>
+        <property name="cronExpression" value="0 0 * * * ?"/>
+    </bean>
+    <bean id="weeklyArAgingTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="weeklyArAgingJob"/>
+        <property name="cronExpression" value="0 0 6 ? * MON"/>
+    </bean>
+    <bean id="dailyBackupTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="dailyBackupJob"/>
+        <property name="cronExpression" value="0 30 2 * * ?"/>
+    </bean>
+    <bean id="demoEveryMinuteTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="demoEveryMinuteJob"/>
+        <property name="cronExpression" value="0 * * * * ?"/>
+    </bean>
+    <bean id="inboundPollerTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="inboundPollerJob"/>
+        <!-- Every 2 minutes for demo purposes; ops sets this to 30min in prod via
+             the deployer's local quartz.properties override. -->
+        <property name="cronExpression" value="0 0/2 * * * ?"/>
+    </bean>
+
+    <bean id="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="nightlyInvoiceTrigger"/>
+                <ref bean="hourlyCarrierFeedTrigger"/>
+                <ref bean="weeklyArAgingTrigger"/>
+                <ref bean="dailyBackupTrigger"/>
+                <ref bean="demoEveryMinuteTrigger"/>
+                <ref bean="inboundPollerTrigger"/>
+            </list>
+        </property>
+        <property name="quartzProperties">
+            <props>
+                <prop key="org.quartz.threadPool.threadCount">5</prop>
+                <prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>
